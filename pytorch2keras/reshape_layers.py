@@ -83,10 +83,16 @@ def convert_reshape(params, w_name, scope_name, inputs, layers, weights, names):
         tf_name = w_name + str(random.random())
 
     if len(inputs) > 1:
-        if layers[inputs[1]][0] == -1:
+        np_key = '{0}_np'.format(inputs[1])
+        assert np_key in layers, "Missing numpy-type input for reshape"
+
+        np_inputs = layers[np_key]
+        #const_inputs = layers[inputs[1]]
+
+        if np_inputs[0] == -1:
             print('Cannot deduct batch size! It will be omitted, but result may be wrong.')
 
-        def target_layer(x, shape=layers[inputs[1]]):
+        def target_layer(x, shape=np_inputs):
             import tensorflow as tf
             return tf.reshape(x, shape)
 
